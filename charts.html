@@ -36,7 +36,7 @@
     } 
     //passes the indicator link and name
     function showLink(name,id){
-        alert(id);
+        //alert(id);
          $('#increment').html("");
          $('#charts').html("");
          $('#tables').html("");
@@ -52,6 +52,7 @@
     $.get('http://localhost:8090/dhis/api/mapViews.json', function(mapdata){
          var count=0;
          $("#maps").html("");
+          $('#increment').html("");
             $(mapdata.mapViews).each(function(i,data2){
                 //if(id==data2.id){
                if (data2.name.indexOf(name)!=-1){
@@ -71,6 +72,7 @@
     {$.get('http://localhost:8090/dhis/api/charts.json', function(chartdata){
         var charts=0;
         $("#charts").html("");
+        $("#chart_div").html("");
             $(chartdata.charts).each(function(i,cdata){
                 //if(id==data2.id){
                if (cdata.name.indexOf(name)!=-1){
@@ -93,7 +95,8 @@
     
     {$.get('http://localhost:8090/dhis/api/reportTables.json', function(rtdata){
         var tables=0;
-        $("#charts").html("");
+        $("#tables").html("");
+        $("#R_tables").html("");
             $(rtdata.reportTables).each(function(i,tdata){
                 
                if (tdata.name.indexOf(name)!=-1){
