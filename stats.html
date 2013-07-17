@@ -1,0 +1,182 @@
+<html>
+<script text="text/javascript">
+var used=0; var unused=0; var sum=0;
+    $(document).ready( function(){
+       $('#search').keyup(function(){
+        $.get('../api/indicatorGroups/query/'+$(this).val()+'.json',function(data){
+            $(data.indicatorGroups).each(function(i,obj){
+               var results=$("<a></a>").attr("href",obj.href).append(obj.name).append('</br>').click(function(){
+               getindicatorpage(obj.href); 
+                 
+                 $('#sum').html("");
+                 $('#used').html("");
+                 $('#unused').html("");
+                   return false;
+               });
+             
+                $('#results').append(results);
+                                  
+            });
+             
+        
+        });
+        
+       });
+    });
+        
+    function getindicatorpage(obj){
+       // $('#output').html("");
+        $('#count').html("");
+        $.get(obj+'.json', function(x){
+                
+                $('#count').append(x.indicators.length);
+               
+                var array=(x.indicators);
+                    array.forEach(function(dat,i){
+                       
+                            showLink(dat.name,dat.id);
+                            return false;
+                            });
+                       
+                   //   $('#used').append(used);
+                    //  $('#unused').append(unused);
+                    
+           
+        });   
+        
+    } 
+    
+    function showLink(name,id){
+        alert(sum);
+        loadMapData(name);
+        loadChartData(name);
+        loadRTData(name);  
+       $('#sum').append(sum);
+       compare(sum); 
+        
+    }
+    
+    function compare (sum){
+        
+        if (sum!=0){
+           
+            used++;
+           
+           }
+        else{
+            unused++;
+        }
+        
+    } 
+    
+    function loadMapData(name){
+   
+    $.get('http://localhost:8090/dhis/api/mapViews.json', function(mapdata,sum){
+         var maps=0;
+         
+         $("#map_div").html("");
+         $('#maps').html("");
+            $(mapdata.mapViews).each(function(i,data2){
+                //if(id==data2.id){
+               if (data2.name.indexOf(name)!=-1){
+                //var count++;
+                var img=$("<img/>").attr('src',data2.href+'/data').attr('title',data2.name);
+                
+                maps++;
+               // sum=maps+sum;
+              //  alert("maps "+sum);
+                $("#map_div").append(img);
+                }
+            
+            });
+            $('#maps').append(maps);
+           /// return sum;
+    })}
+    
+    
+    function loadChartData(name,sum){
+    
+    $.get('http://localhost:8090/dhis/api/charts.json', function(chartdata){
+        var charts=0;
+        $("#charts").html("");
+        $("#chart_div").html("");
+            $(chartdata.charts).each(function(i,cdata){
+                //if(id==data2.id){
+               if (cdata.name.indexOf(name)!=-1){
+                //var count++;
+                var img=$("<img/>").attr('src',cdata.href+'/data').attr('title',cdata.name);
+                charts++;
+               // sum=charts+sum;
+                alert("charts "+sum);
+                $("#chart_div").append(img);
+                }
+            
+            });
+        
+            $('#charts').append(charts);
+           // return sum;
+    
+    })}
+    
+      
+    function loadRTData(name,sum){
+    
+    $.get('http://localhost:8090/dhis/api/reportTables.json', function(rtdata){
+        var tables=0;
+        $("#tables").html("");
+        $("#R_tables").html("");
+            $(rtdata.reportTables).each(function(i,tdata){
+                
+               if (tdata.name.indexOf(name)!=-1){
+                var anchor=$("<iframe><iframe/>").attr('src',tdata.href+'/data').attr("height",300).attr("width",300).append("<br/>");
+                tables++;
+                sum=sum+tables;
+                alert("tables"+sum);
+                $("#R_tables").append(anchor);
+                }
+            
+            });
+        
+            $('#tables').append(tables);
+            return sum;
+    })}
+   
+ /* function add(tables,charts,count){
+    var sum=tables+charts+count;
+    
+  }*/
+    
+ 
+    
+    
+   
+</script>
+<div>
+<label for="search">Search Criteria</label>
+<input type="text" id="search" class="search" />
+
+<div>
+<div style="float:left;width:30%" id="results"></div>
+<div style="float:left;width:30%" id="output"></div>
+</div>
+<div>
+<div style="float:left">
+<label>total number of indicators</label>
+<div  id="count"></div>
+<label>map count</label>
+<div  id="maps"></div>
+<label>chart count</label>
+<div  id="charts"></div>
+<label>table count</label>
+<div id="tables"></div>
+
+</div>
+<div style="">
+<div id="output"></div>
+<div id="R_tables"></div>
+<div id="chart_div"></div>
+<div id="map_div"></div>
+<div id="url"></div>
+</div>
+</div>
+</html>

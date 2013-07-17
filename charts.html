@@ -1,0 +1,144 @@
+<html>
+<script text="text/javascript">
+
+    $(document).ready( function(){
+       $('#search').keyup(function(){
+        $.get('../api/indicatorGroups/query/'+$(this).val()+'.json',function(data){
+            $(data.indicatorGroups).each(function(i,obj){
+               var results=$("<a></a>").attr("href",obj.href).append(obj.name).append('</br>').click(function(){getindicatorpage(obj.href); return false;});
+              // var results=$("<a id="+obj.href+"onclick='javascript:getindicatorpage(id)'></a>").append(obj.name).append("</br>");
+                $('#results').append(results);
+                                  
+            });
+             
+        
+        });
+        
+       });
+    });
+        
+    function getindicatorpage(obj){
+        $('#output').html("");
+        $('#count').html("");
+        $.get(obj+'.json', function(x){
+       
+        $('#count').append(x.indicators.length);
+        $(x.indicators).each (function(i,dat){
+            var output=$('<a></a>').attr("href",dat.href).append(dat.name).append('</br>').click(function(){
+                showLink(dat.name,dat.id);
+                return false;
+                });
+            $('#output').append(output);
+            });
+        //alert(x.indicatorGroupSet.id);
+        });   
+        
+    } 
+    //passes the indicator link and name
+    function showLink(name,id){
+        alert(id);
+         $('#increment').html("");
+         $('#charts').html("");
+         $('#tables').html("");
+        loadMapData(name);
+        loadChartData(name);
+        loadRTData(name);
+    }
+    
+     
+    
+    function loadMapData(name){
+   
+    $.get('http://localhost:8090/dhis/api/mapViews.json', function(mapdata){
+         var count=0;
+         $("#maps").html("");
+            $(mapdata.mapViews).each(function(i,data2){
+                //if(id==data2.id){
+               if (data2.name.indexOf(name)!=-1){
+                //var count++;
+                var img=$("<img/>").attr('src',data2.href+'/data').attr('title',data2.name);
+                count++;
+                $("#maps").append(img);
+                }
+            
+            });
+            $('#increment').append(count);
+    })}
+    
+    
+    function loadChartData(name)
+    
+    {$.get('http://localhost:8090/dhis/api/charts.json', function(chartdata){
+        var charts=0;
+        $("#charts").html("");
+            $(chartdata.charts).each(function(i,cdata){
+                //if(id==data2.id){
+               if (cdata.name.indexOf(name)!=-1){
+                //var count++;
+                var img=$("<img/>").attr('src',cdata.href+'/data').attr('title',cdata.name);
+                charts++;
+                $("#chart_div").append(img);
+                }
+            
+            });
+        
+            $('#charts').append(charts);
+    
+    })}
+    
+   
+   
+    
+    function loadRTData(name)
+    
+    {$.get('http://localhost:8090/dhis/api/reportTables.json', function(rtdata){
+        var tables=0;
+        $("#charts").html("");
+            $(rtdata.reportTables).each(function(i,tdata){
+                
+               if (tdata.name.indexOf(name)!=-1){
+                var anchor=$("<iframe><iframe/>").attr('src',tdata.href+'/data').attr("height",300).attr("width",300).append("<br/>");
+                tables++;
+                $("#R_tables").append(anchor);
+                }
+            
+            });
+        
+            $('#tables').append(tables);
+    
+    })}
+  
+    
+   // function loadRTData(){$.get('http://localhost:8090/dhis/api/reportTables.json', function(data3){RT_DATA = data3;})}
+    
+    
+    
+   
+</script>
+<div>
+<label for="search">Search Criteria</label>
+<input type="text" id="search" class="search" />
+
+<div>
+<div style="float:left;width:30%" id="results"></div>
+<div style="float:left;width:30%" id="output"></div>
+</div>
+<div>
+<div style="float:left">
+<label>total number of indicators</label>
+<div  id="count"></div>
+<label>map count</label>
+<div  id="increment"></div>
+<label>chart count</label>
+<div  id="charts"></div>
+<label>table count</label>
+<div id="tables"></div>
+</div>
+<div style="">
+<div id="R_tables"></div>
+<div id="chart_div"></div>
+<div id="maps"></div>
+<div id="url"></div>
+</div>
+</div>
+</html>
