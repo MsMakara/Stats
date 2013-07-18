@@ -1,21 +1,81 @@
+
+<html>
 <script style="text\javascript">
-    $(document).ready(function(){
+
+    $(document).ready(showindi());
+    var unusedarray=new Array();
+    var usedarray=new Array();
+    var allarray=new Array();
+    $('#used').hide();
+    function showindi(){
         $.get("http://localhost:8090/dhis/api/indicators.json", function(data){
             $('#indicators').html("");
             var total=(data.indicators.length);
             $(data.indicators).each(function(i,indi){
+            //alert(i);
                 var indicator=$("<a></a>").append(indi.name).append('</br>');
-                $('#indicators').append(indicator);
-                
+                allarray.push(indicator);
+                $('#indicators').append(indicator);               
             });
+            
+            showopts();  
             $('#total').append(total);
         });
     
-    });
+    }
+   function showopts(){
+   
+      $("button").click(function(){
+      //clear the used once you start searching for indicators
+      $('#used').html("");
+        //go to the maps url in json
+        $.get("http://localhost:8090/dhis/api/mapViews.json",function(mapsdata){
+               alert("currently searching maps");
+               //go to each mapview object
+               $(mapsdata.mapViews).each(function(i,view){
+               //go to each href of each mapview object looking for the concerned indicators
+                    $.get(view.href+'.json',function(individualmap){
+                     alert("got a map!!! yipeeee!!!!");
+                        //if found, go to each indicator
+                        $(individualmap.indicator).each(function(i,indim){
+                        $('#usedtotal').html("");
+                            //assign the name and url to the mapView to a var
+                            var used=$("<a></a>").attr('href',individualmap.href).append(indim.name).append('</br>');
+                               //push to the indicator id to the 'used' array
+                            usedarray.push(indim.id);
+                            
+                            //output the name and url to the map
+                            
+                            $('#used').append(used);
+                            $('#used').show();
+                        });
+                        var usedtotal=(usedarray.length);
+                        $('#usedtotal').append(usedtotal);
+                    });
+               });
+            
+            
+        });
+  });  
+   
+   } 
+    
 </script>
 <div>
+<div style="width:30%">
 <label>Indicators</label>
 <div id="indicators"></div>
 <label>Total</label>
 <div id="total"></div>
-<div>
+</div>
+<div  style="width:30% float:right">
+<button>Maps</button>
+<div id="first">
+<label>Used</label>
+<div id="used"></div>
+<label>Total Used</label>
+<div id="usedtotal"></div>
+</div>
+</div>
+</div>
+</html>
