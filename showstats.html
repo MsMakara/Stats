@@ -39,12 +39,14 @@
                         //if found, go to each indicator
                         $(individualmap.indicator).each(function(i,indim){
                         $('#usedtotal').html("");
-                            //assign the name and url to the mapView to a var
-                            var used=$("<a></a>").attr('href',individualmap.href).append(indim.name).append('</br>');
-                               //push to the indicator id to the 'used' array
-                            usedarray.push(indim.id);
-                            
-                            //output the name and url to the map
+                            var value=(indim.id);
+                           // fruits.indexOf("Apple")
+                            var n=-1;
+                           if ((usedarray.indexOf(indim.id))==n)
+                            {
+                                 usedarray.push(indim.id);
+                                 var used=$("<a></a>").attr('href',individualmap.href+'/data').append(indim.name).append('</br>');
+                                }
                             
                             $('#used').append(used);
                             $('#used').show();
@@ -56,6 +58,8 @@
             
             
         });
+        
+       // $.get("",function())
   });  
    
    } 
