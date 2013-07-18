@@ -6,7 +6,8 @@
     var unusedarray=new Array();
     var usedarray=new Array();
     var allarray=new Array();
-    $('#used').hide();
+    var usedtotal;
+    $('#first').hide();
     function showindi(){
         $.get("http://localhost:8090/dhis/api/indicators.json", function(data){
             $('#indicators').html("");
@@ -27,43 +28,85 @@
    
       $("button").click(function(){
       //clear the used once you start searching for indicators
-      $('#used').html("");
+     
         //go to the maps url in json
         $.get("http://localhost:8090/dhis/api/mapViews.json",function(mapsdata){
+         $('#used').html("");
                alert("currently searching maps");
                //go to each mapview object
                $(mapsdata.mapViews).each(function(i,view){
                //go to each href of each mapview object looking for the concerned indicators
                     $.get(view.href+'.json',function(individualmap){
-                     alert("got a map!!! yipeeee!!!!");
+                    // alert("got a map!!! yipeeee!!!!");
                         //if found, go to each indicator
                         $(individualmap.indicator).each(function(i,indim){
                         $('#usedtotal').html("");
                             var value=(indim.id);
-                           // fruits.indexOf("Apple")
                             var n=-1;
                            if ((usedarray.indexOf(indim.id))==n)
                             {
-                                 usedarray.push(indim.id);
-                                 var used=$("<a></a>").attr('href',individualmap.href+'/data').append(indim.name).append('</br>');
+                                usedarray.push(indim.id);
+                                var used=$("<a></a>").attr('href',individualmap.href+'/data').append(indim.name).append('</br>');
                                 }
                             
-                            $('#used').append(used);
-                            $('#used').show();
+                           $('#used').append(used);
+                           
+                            
                         });
-                        var usedtotal=(usedarray.length);
-                        $('#usedtotal').append(usedtotal);
+                       // var usedtotal=(usedarray.length);
+                        //$('#usedtotal').append(usedtotal);
                     });
                });
             
             
         });
         
-       // $.get("",function())
-  });  
-   
+        $.get("http://localhost:8090/dhis/api/charts.json",function(chartsdata){
+            
+               alert("currently searching charts");
+               
+               $(chartsdata.charts).each(function(i,cview){
+              
+                    $.get(cview.href+'.json',function(individualchart){
+                    
+                        
+                        $(individualchart.indicators).each(function(i,indic){
+                       $('#usedtotal').html("");
+                            var value=(indic.id);
+                            //alert(indic.id);
+                            var n=-1;
+                          if ((usedarray.indexOf(indic.id))==n)
+                           {
+                                 usedarray.push(indic.id);
+                                 var used=$("<a></a>").attr('href',individualchart.href+'/data').append(indic.name).append('</br>');
+                               }
+                            
+                            $('#used').append(used);
+                           // var usedtotal=(usedarray.length);
+                            $('#usedtotal').append(usedarray.length);
+                            // alert(usedtotal);
+                        });
+                     //  var usedtotal=(usedarray.length) ;
+                      // alert(usedarray.length);
+                      
+                    });
+                  
+                    
+               });
+            // 
+            
+             
+             
+            
+        });
+        
+        
+        
+      
+  }); 
+   // $('#first').show();
    } 
-    
+   
 </script>
 <div>
 <div style="width:30%">
