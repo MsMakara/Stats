@@ -7,20 +7,22 @@
     var usedarray=new Array();
     var allarray=new Array();
     var usedtotal;
+    var a,u,n;
     $('#first').hide();
     function showindi(){
         $.get("http://localhost:8090/dhis/api/indicators.json", function(data){
             $('#indicators').html("");
             var total=(data.indicators.length);
             $(data.indicators).each(function(i,indi){
-            //alert(i);
+            
                 var indicator=$("<a></a>").append(indi.name).append('</br>');
-                allarray.push(indicator);
+                allarray.push(indi.id);
                 $('#indicators').append(indicator);               
             });
+            $('#total').append(allarray.length);
+            showopts(); 
             
-            showopts();  
-            $('#total').append(total);
+            
         });
     
     }
@@ -47,11 +49,8 @@
                             {
                                 usedarray.push(indim.id);
                                 var used=$("<a></a>").attr('href',individualmap.href+'/data').append(indim.name).append('</br>');
-                                }
-                            
-                           $('#used').append(used);
-                           
-                            
+                                $('#used').append(used);
+                                }  
                         });
                        // var usedtotal=(usedarray.length);
                         //$('#usedtotal').append(usedtotal);
@@ -79,49 +78,115 @@
                            {
                                  usedarray.push(indic.id);
                                  var used=$("<a></a>").attr('href',individualchart.href+'/data').append(indic.name).append('</br>');
+                                 $('#used').append(used);
                                }
                             
-                            $('#used').append(used);
-                           // var usedtotal=(usedarray.length);
+                            
+                          //  var usedtotal=(usedarray.length);
                             $('#usedtotal').append(usedarray.length);
-                            // alert(usedtotal);
+                            
                         });
-                     //  var usedtotal=(usedarray.length) ;
-                      // alert(usedarray.length);
+                     
                       
                     });
                   
                     
                });
-            // 
+            
             
              
              
             
         });
         
+        $.get("http://localhost:8090/dhis/api/reportTables.json",function(rtsdata){
+            
+               alert("currently searching report tables");
+               
+               $(rtsdata.reportTables).each(function(i,rtview){
+              
+                    $.get(rtview.href+'.json',function(individualtable){
+                    
+                        
+                        $(individualtable.indicators).each(function(i,indirt){
+                            $('#usedtotal').html("");
+                            var value=(indirt.id);
+                            var n=-1;
+                                if ((usedarray.indexOf(indirt.id))==n)
+                                {
+                                     usedarray.push(indirt.id);
+                                     //$('#usedtotal').append(usedarray.length);
+                                     var used=$("<a></a>").attr('href',individualtable.href+'/data').append(indirt.name).append('</br>');
+                                     $('#used').append(used);
+                                     
+                                }
+                                else{
+                               // $('#usedtotal').append(usedarray.length); 
+                                };
+                                
+                        });
+                    });
+               });
+             diff(usedarray);
+            
+             
+             
+            
+        });
+        //get indicators
+     function diff(usedarray){
+        alert(usedarray);
+        
+       $.get("http://localhost:8090/dhis/api/indicators.json", function(data){
+            $(data.indicators).each(function(i,indi){
+               // alert(indi.data);
+               // $('#unusedcount').html("");
+                var n=-1;
+                if ((usedarray.indexOf(indi.id))==n){
+                    
+                    unusedarray.push(indi.name);
+                    $('#unused').append(indi.name).append('</br>');
+                   // $('#unusedcount').append(unusedarray.length);
+                    
+                }
+                           
+            });
+            $('#unusedcount').append(unusedarray.length);
+        }); 
         
         
-      
-  }); 
-   // $('#first').show();
-   } 
+    }
+   });
    
+}   
+
 </script>
 <div>
-<div style="width:30%">
+<div style="width:33%">
 <label>Indicators</label>
 <div id="indicators"></div>
 <label>Total</label>
 <div id="total"></div>
 </div>
-<div  style="width:30% float:right">
+<div  style="width:40% float:right position:absolute;">
 <button>Maps</button>
-<div id="first">
+</div>
+<table>
+<td>
+<div>
 <label>Used</label>
 <div id="used"></div>
 <label>Total Used</label>
 <div id="usedtotal"></div>
+</div>
+</td>
+<td>
+<label>Unused</label>
+<div id="unused"></div>
+<label>Total Unused</label>
+<div id="unusedcount"></div>
+</td>
+</table>
 </div>
 </div>
 </div>
