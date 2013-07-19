@@ -152,6 +152,10 @@
                            
             });
             $('#unusedcount').append(unusedarray.length);
+            a=(data.indicators.length); alert(a);
+            u=(usedarray.length); alert(u);
+            n=(unusedarray.length); alert(n);
+            percentage(a,u,n);
         }); 
         
         
@@ -159,7 +163,17 @@
    });
    
 }   
-
+    
+    function percentage(a,u,n){
+        pu=(u/a)*100;
+        alert(pu);
+        $('#usedpercent').append(pu);
+        
+      /*  pn=(n/p)*100;
+        alert(pn);
+        $('#unusedpercent').append(pn);*/
+        
+    }
 </script>
 <div>
 <div style="width:33%">
@@ -178,6 +192,7 @@
 <div id="used"></div>
 <label>Total Used</label>
 <div id="usedtotal"></div>
+<div id="usedpercent"></div>
 </div>
 </td>
 <td>
@@ -185,6 +200,7 @@
 <div id="unused"></div>
 <label>Total Unused</label>
 <div id="unusedcount"></div>
+<div id="unusedpercent"></div>
 </td>
 </table>
 </div>
