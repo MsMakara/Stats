@@ -1,5 +1,28 @@
 
 <html>
+<style type="text/css" media="screen">
+
+/*body {
+
+text-align: center;
+
+min-width: 760px;
+
+}*/
+
+.first {
+
+            float:left;
+}
+.second{
+    float:left;
+}
+.btn{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+</style>
 <script style="text\javascript">
 
     $(document).ready(showindi());
@@ -10,7 +33,7 @@
     var a,u,n;
     $('#first').hide();
     function showindi(){
-        $.get("http://localhost:8090/dhis/api/indicators.json", function(data){
+        $.get("../api/indicators.json", function(data){
             $('#indicators').html("");
             var total=(data.indicators.length);
             $(data.indicators).each(function(i,indi){
@@ -32,9 +55,9 @@
       //clear the used once you start searching for indicators
      
         //go to the maps url in json
-        $.get("http://localhost:8090/dhis/api/mapViews.json",function(mapsdata){
+        $.get("../api/mapViews.json",function(mapsdata){
          $('#used').html("");
-               alert("currently searching maps");
+             //  alert("currently searching maps");
                //go to each mapview object
                $(mapsdata.mapViews).each(function(i,view){
                //go to each href of each mapview object looking for the concerned indicators
@@ -60,9 +83,9 @@
             
         });
         
-        $.get("http://localhost:8090/dhis/api/charts.json",function(chartsdata){
+        $.get("../api/charts.json",function(chartsdata){
             
-               alert("currently searching charts");
+            //   alert("currently searching charts");
                
                $(chartsdata.charts).each(function(i,cview){
               
@@ -99,9 +122,9 @@
             
         });
         
-        $.get("http://localhost:8090/dhis/api/reportTables.json",function(rtsdata){
+        $.get("../api/reportTables.json",function(rtsdata){
             
-               alert("currently searching report tables");
+            //   alert("currently searching report tables");
                
                $(rtsdata.reportTables).each(function(i,rtview){
               
@@ -135,9 +158,9 @@
         });
         //get indicators
      function diff(usedarray){
-        alert(usedarray);
+        //alert(usedarray);
         
-       $.get("http://localhost:8090/dhis/api/indicators.json", function(data){
+       $.get("../api/indicators.json", function(data){
             $(data.indicators).each(function(i,indi){
                // alert(indi.data);
                // $('#unusedcount').html("");
@@ -152,9 +175,9 @@
                            
             });
             $('#unusedcount').append(unusedarray.length);
-            a=(data.indicators.length); alert(a);
-            u=(usedarray.length); alert(u);
-            n=(unusedarray.length); alert(n);
+            a=(data.indicators.length); 
+            u=(usedarray.length); 
+            n=(unusedarray.length); 
             percentage(a,u,n);
         }); 
         
@@ -166,47 +189,45 @@
     
     function percentage(a,u,n){
         pu=(u/a)*100;
-        alert(pu);
+      //  alert(pu);
         $('#usedpercent').append(pu);
         
         alert(n);
         pn=(n/a)*100;
-        alert(pn);
+       // alert(pn);
         $('#unusedpercent').append(pn);
         
     }
 </script>
 <div>
-<div style="width:33%">
-<label>Indicators</label>
+<div class="first" style="width:33%; display;inline-block;">
+<label><h3>Indicators</h3></label>
 <div id="indicators"></div>
 <label>Total</label>
 <div id="total"></div>
 </div>
-<div  style="width:40% float:right position:absolute;">
-<button>Maps</button>
+<div class="second" style="width:65%;float:left">
+<div  class="btn">
+<button><b>List Indicator Use</b></button>
 </div>
-<table>
-<td>
-<div>
-<label>Used</label>
+
+<div style="width:50%;float:left">
+<label><h3>Used</h3></label>
 <div id="used"></div>
-<label>Total Used</label>
+<label><h4>Total Used</h4></label>
 <div id="usedtotal"></div>
-<label>Percentage Used</label>
+<label><h4>Percentage Used</h4></label>
 <div id="usedpercent"></div>
 </div>
-</td>
-<td>
-<label>Unused</label>
+<div style="width:50%;float:right">
+<label><h3>Unused</h3></label>
 <div id="unused"></div>
-<label>Total Unused</label>
+<label><h4>Total Unused</h4></label>
 <div id="unusedcount"></div>
-<label>Percentage Unused</label>
+<label><h4>Percentage Unused</h4></label>
 <div id="unusedpercent"></div>
-</td>
-</table>
 </div>
 </div>
 </div>
+
 </html>
