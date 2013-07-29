@@ -27,10 +27,16 @@ min-width: 760px;
 
     $(document).ready(showindi());
     var unusedarray=new Array();
+    var unusedarray2=new Array();
     var usedarray=new Array();
+    var usedarray2=new Array();
     var allarray=new Array();
+    var allarray2=new Array();
     var usedtotal;
     var a,u,n;
+    var de=0;
+    
+   
     $('#first').hide();
     function showindi(){
         $.get("../api/indicators.json", function(data){
@@ -47,7 +53,31 @@ min-width: 760px;
             
             
         });
-    
+        $('#dataElements').html("");
+        var allarray2=new Array();
+        
+        for (var x=1; x<=11; x++){
+        
+         $.get("../api/dataElements.json?page="+x, function(data){
+            $('#total2').html("");
+                $(data.dataElements).each(function(i,indi){
+                
+                    var indicator=$("<a></a>").append(indi.name).append('</br>');
+                    allarray2.push(indi.id);
+                    // alert(indi.id);
+                    $('#dataElements').append(indicator); 
+                    
+                });
+           // var total2=(data.dataElements.length); 
+           $('#total2').append(allarray2.length);
+          //  alert("total data elements "+ allarray2.length);
+            });
+            
+       }
+        
+       
+        
+         
     }
    function showopts(){
    
@@ -65,7 +95,7 @@ min-width: 760px;
                     // alert("got a map!!! yipeeee!!!!");
                         //if found, go to each indicator
                         $(individualmap.indicator).each(function(i,indim){
-                        $('#usedtotal').html("");
+                      //  $('#usedtotal').html("");
                             var value=(indim.id);
                             var n=-1;
                            if ((usedarray.indexOf(indim.id))==n)
@@ -83,7 +113,98 @@ min-width: 760px;
             
         });
         
-        $.get("../api/charts.json",function(chartsdata){
+        $.get("../api/mapViews.json",function(mapsdata){
+         $('#used2').html("");
+             //  alert("currently searching maps");
+               //go to each mapview object
+               $(mapsdata.mapViews).each(function(i,view){
+               //go to each href of each mapview object looking for the concerned indicators
+                    $.get(view.href+'.json',function(individualmap){
+                    // alert("got a map!!! yipeeee!!!!");
+                        //if found, go to each indicator
+                        $(individualmap.dataElement).each(function(i,indim){
+                       // $('#usedtotal2').html("");
+                            var value=(indim.id);
+                            var n=-1;
+                           if ((usedarray2.indexOf(indim.id))==n)
+                            {
+                                usedarray2.push(indim.id);
+                                var used=$("<a></a>").attr('href',individualmap.href+'/data').append(indim.name).append('</br>');
+                                $('#used2').append(used);
+                                }  
+                        });
+                       // var usedtotal=(usedarray.length);
+                        //$('#usedtotal').append(usedtotal);
+                    });
+               });
+            
+            
+        });
+        
+        
+         $.get("../api/reportTables.json",function(rtsdata){
+            
+            //   alert("currently searching report tables");
+               
+               $(rtsdata.reportTables).each(function(i,rtview){
+              
+                    $.get(rtview.href+'.json',function(individualtable){
+                    
+                        
+                        $(individualtable.indicators).each(function(i,indirt){
+                            //$('#usedtotal').html("");
+                            var value=(indirt.id);
+                            var n=-1;
+                                if ((usedarray.indexOf(indirt.id))==n)
+                                {
+                                     usedarray.push(indirt.id);
+                                     //$('#usedtotal').append(usedarray.length);
+                                     var used=$("<a></a>").attr('href',individualtable.href+'/data.pdf').append(indirt.name).append('</br>');
+                                     $('#used').append(used);
+                                     
+                                }
+                                
+                                
+                        });
+                    });
+               });
+            
+             
+             
+            
+        });
+        
+        
+        $.get("../api/reportTables.json",function(rtsdata){
+            
+            //   alert("currently searching report tables");
+               
+               $(rtsdata.reportTables).each(function(i,rtview){
+              
+                    $.get(rtview.href+'.json',function(individualtable){
+                    
+                        
+                        $(individualtable.dataElements).each(function(i,indirt){
+                            //$('#usedtotal2').html("");
+                            var value=(indirt.id);
+                            var n=-1;
+                                if ((usedarray2.indexOf(indirt.id))==n)
+                                {
+                                     usedarray2.push(indirt.id);
+                                     //$('#usedtotal').append(usedarray.length);
+                                     var used=$("<a></a>").attr('href',individualtable.href+'/data.pdf').append(indirt.name).append('</br>');
+                                     $('#used2').append(used);
+                                     
+                                }
+                                
+                                
+                        });
+                    });
+               });
+    
+        });
+        
+         $.get("../api/charts.json",function(chartsdata){
             
             //   alert("currently searching charts");
                
@@ -102,6 +223,7 @@ min-width: 760px;
                                  usedarray.push(indic.id);
                                  var used=$("<a></a>").attr('href',individualchart.href+'/data').append(indic.name).append('</br>');
                                  $('#used').append(used);
+                                 $('#usedtotal').append(usedarray.length);
                                }
                             
                             
@@ -115,89 +237,149 @@ min-width: 760px;
                   
                     
                });
-            
+                         diff(usedarray);
+                       // alert("pass usedarray 1"+ usedarray.length);
             
              
              
             
         });
         
-        $.get("../api/reportTables.json",function(rtsdata){
+        $.get("../api/charts.json",function(chartsdata){
             
-            //   alert("currently searching report tables");
+            //   alert("currently searching charts");
                
-               $(rtsdata.reportTables).each(function(i,rtview){
+               $(chartsdata.charts).each(function(i,cview){
               
-                    $.get(rtview.href+'.json',function(individualtable){
+                    $.get(cview.href+'.json',function(individualchart){
                     
                         
-                        $(individualtable.indicators).each(function(i,indirt){
-                            $('#usedtotal').html("");
-                            var value=(indirt.id);
+                        $(individualchart.dataElements).each(function(i,indic){
+                        $('#usedtotal2').html("");
+                            var value=(indic.id);
+                            //alert(indic.id);
                             var n=-1;
-                                if ((usedarray.indexOf(indirt.id))==n)
-                                {
-                                     usedarray.push(indirt.id);
-                                     //$('#usedtotal').append(usedarray.length);
-                                     var used=$("<a></a>").attr('href',individualtable.href+'/data').append(indirt.name).append('</br>');
-                                     $('#used').append(used);
-                                     
-                                }
-                                else{
-                               // $('#usedtotal').append(usedarray.length); 
-                                };
+                          if ((usedarray2.indexOf(indic.id))==n)
+                           {
                                 
+                                 usedarray2.push(indic.id);
+                                 var ua2=(usedarray2.length);
+                                 var used=$("<a></a>").attr('href',individualchart.href+'/data').append(indic.name).append('</br>');
+                                 $('#used2').append(used);
+                                // $('#usedtotal2').append(usedarray2.length);
+                               }
+                            
+                            
+                          //  var usedtotal=(usedarray.length);
+                            $('#usedtotal2').append(ua2);
+                           
                         });
+                        
+                      
                     });
+                  
+                    
                });
-             diff(usedarray);
+                         diff2(usedarray2);
+                          // alert("pass usedarray 2 "+usedarray2.length);
             
              
              
             
         });
-        //get indicators
-     function diff(usedarray){
-        //alert(usedarray);
         
+     function diff(usedarray){
+     
+       
        $.get("../api/indicators.json", function(data){
             $(data.indicators).each(function(i,indi){
-               // alert(indi.data);
-               // $('#unusedcount').html("");
+               
                 var n=-1;
                 if ((usedarray.indexOf(indi.id))==n){
                     
                     unusedarray.push(indi.name);
                     $('#unused').append(indi.name).append('</br>');
-                   // $('#unusedcount').append(unusedarray.length);
-                    
+                 
                 }
                            
             });
+          
             $('#unusedcount').append(unusedarray.length);
+            
             a=(data.indicators.length); 
             u=(usedarray.length); 
-            n=(unusedarray.length); 
+            n=(unusedarray.length);
             percentage(a,u,n);
         }); 
         
         
     }
+    
+    function diff2(usedarray2){
+       
+       var allarray3= new Array();
+        for (var x=1; x<=11; x++){
+         $.get("../api/dataElements.json?page="+x, function(data){
+            $('#unusedcount2').html("");
+            $(data.dataElements).each(function(i,indi){
+               
+               allarray3.push(indi.id);
+                var n=-1;
+                if ((usedarray2.indexOf(indi.id))==n){
+                    
+                    unusedarray2.push(indi.name);
+                    $('#unused2').append(indi.name).append('</br>'); 
+                }
+          
+            });
+            a2=(allarray3.length);// alert(a2);
+            $('#unusedcount2').append(unusedarray2.length);
+            u2=(usedarray2.length); //alert (u2);
+            n2=(unusedarray2.length);// alert (n2);
+            percentage2(a2,u2,n2);
+        
+        }); 
+        
+       } 
+          /*  $('#unusedcount2').append(unusedarray2.length);
+            u2=(usedarray2.length); 
+            n2=(unusedarray2.length); 
+            percentage2(a2,u2,n2);*/
+        
+    }
    });
    
-}   
+}    
     
     function percentage(a,u,n){
         pu=(u/a)*100;
       //  alert(pu);
         $('#usedpercent').append(pu);
         
-        alert(n);
+        //alert(n);
         pn=(n/a)*100;
        // alert(pn);
         $('#unusedpercent').append(pn);
         
     }
+    function percentage2(a,u,n){
+    $('#usedpercent2').html("");
+    $('#unusedpercent2').html("");
+        pu=(u/a)*100;
+      //  alert(pu);
+        $('#usedpercent2').append(pu);
+        
+        //alert(n);
+        pn=(n/a)*100;
+       // alert(pn);
+        $('#unusedpercent2').append(pn);
+        
+    }
+  
+   
+  
+
+
 </script>
 <div>
 <div class="first" style="width:33%; display;inline-block;">
@@ -205,27 +387,47 @@ min-width: 760px;
 <div id="indicators"></div>
 <label>Total</label>
 <div id="total"></div>
+<label><h3>data elements</h3></label>
+<div id="dataElements"></div>
+<label>Total</label>
+<div id="total2"></div>
+
 </div>
 <div class="second" style="width:65%;float:left">
 <div  class="btn">
-<button><b>List Indicator Use</b></button>
+<button><b>List Indicator and DataElement Use</b></button>
 </div>
 
 <div style="width:50%;float:left">
-<label><h3>Used</h3></label>
+<label><h3><b>Used Indicators</b></h3></label>
 <div id="used"></div>
 <label><h4>Total Used</h4></label>
 <div id="usedtotal"></div>
 <label><h4>Percentage Used</h4></label>
 <div id="usedpercent"></div>
+
+<label><h3><b>Used DataElements</b></h3></label>
+<div id="used2"></div>
+<label><h4>Total Used</h4></label>
+<div id="usedtotal2"></div>
+<label><h4>Percentage Used</h4></label>
+<div id="usedpercent2"></div>
+
 </div>
 <div style="width:50%;float:right">
-<label><h3>Unused</h3></label>
+<label><h3>Unused Indicators</h3></label>
 <div id="unused"></div>
 <label><h4>Total Unused</h4></label>
 <div id="unusedcount"></div>
 <label><h4>Percentage Unused</h4></label>
 <div id="unusedpercent"></div>
+
+<label><h3><b>Unused Data Elements</b></h3></label>
+<div id="unused2"></div>
+<label><h4>Total Unused</h4></label>
+<div id="unusedcount2"></div>
+<label><h4>Percentage Unused</h4></label>
+<div id="unusedpercent2"></div>
 </div>
 </div>
 </div>
