@@ -86,7 +86,7 @@ min-width: 760px;
      
         //go to the maps url in json
         $.get("../api/mapViews.json",function(mapsdata){
-         $('#used').html("");
+        // $('#used').html("");
              //  alert("currently searching maps");
                //go to each mapview object
                $(mapsdata.mapViews).each(function(i,view){
@@ -114,7 +114,7 @@ min-width: 760px;
         });
         
         $.get("../api/mapViews.json",function(mapsdata){
-         $('#used2').html("");
+       //  $('#used2').html("");
              //  alert("currently searching maps");
                //go to each mapview object
                $(mapsdata.mapViews).each(function(i,view){
@@ -223,7 +223,7 @@ min-width: 760px;
                                  usedarray.push(indic.id);
                                  var used=$("<a></a>").attr('href',individualchart.href+'/data').append(indic.name).append('</br>');
                                  $('#used').append(used);
-                                 $('#usedtotal').append(usedarray.length);
+                                 //$('#usedtotal').append(usedarray.length);
                                }
                             
                             
@@ -255,7 +255,7 @@ min-width: 760px;
                     
                         
                         $(individualchart.dataElements).each(function(i,indic){
-                        $('#usedtotal2').html("");
+                      //  $('#usedtotal2').html("");
                             var value=(indic.id);
                             //alert(indic.id);
                             var n=-1;
@@ -271,7 +271,7 @@ min-width: 760px;
                             
                             
                           //  var usedtotal=(usedarray.length);
-                            $('#usedtotal2').append(ua2);
+                            //$('#usedtotal2').append(ua2);
                            
                         });
                         
@@ -316,13 +316,13 @@ min-width: 760px;
     }
     
     function diff2(usedarray2){
-       
+
        var allarray3= new Array();
         for (var x=1; x<=11; x++){
          $.get("../api/dataElements.json?page="+x, function(data){
             $('#unusedcount2').html("");
             $(data.dataElements).each(function(i,indi){
-               
+              $('#usedtotal2').html("");
                allarray3.push(indi.id);
                 var n=-1;
                 if ((usedarray2.indexOf(indi.id))==n){
@@ -335,17 +335,14 @@ min-width: 760px;
             a2=(allarray3.length);// alert(a2);
             $('#unusedcount2').append(unusedarray2.length);
             u2=(usedarray2.length); //alert (u2);
+            $('#usedtotal2').append(u2);
             n2=(unusedarray2.length);// alert (n2);
             percentage2(a2,u2,n2);
         
         }); 
         
        } 
-          /*  $('#unusedcount2').append(unusedarray2.length);
-            u2=(usedarray2.length); 
-            n2=(unusedarray2.length); 
-            percentage2(a2,u2,n2);*/
-        
+          
     }
    });
    
